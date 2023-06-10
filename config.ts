@@ -7,6 +7,7 @@ type config = {
     MONGO_CONNECTION: string
     JWT_SECRET: string
     SESSION_SECRET: string
+    OPENAI: string
 }
 
 const env = process.env as any
@@ -15,7 +16,8 @@ const variables: config = {
     PORT: env.PORT,
     MONGO_CONNECTION: env.MONGO_CONNECTION,
     JWT_SECRET: env.JWT_SECRET,
-    SESSION_SECRET: env.SESSION_SECRET
+    SESSION_SECRET: env.SESSION_SECRET,
+    OPENAI: env.OPENAI
 }
 
 export default variables

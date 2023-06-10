@@ -140,3 +140,13 @@ export class ItemExistsError extends BaseError {
         return [{ status: this.status, detail: this.detail, message: this.message }]
     }
 }
+
+export class ChatGPTError extends BaseError {
+    constructor(message: string = '') {
+        super(message, 400, 'Something went wrong with the AI API, please try again later.')
+    }
+
+    serializeErrors() {
+        return [{ status: this.status, detail: this.detail, message: this.message }]
+    }
+}
