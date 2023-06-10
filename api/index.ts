@@ -37,8 +37,11 @@ app.use((req, res, next) => {
 // routes
 import { router as authRouter } from './routes/auth'
 import { router as promptRouter } from './routes/prompt'
+import { router as openaiRouter } from './routes/openai'
+
 app.use('/auth', authRouter)
 app.use('/prompt', promptRouter)
+app.use('/openai', openaiRouter)
 
 // Error Handling
 app.use(status500)
