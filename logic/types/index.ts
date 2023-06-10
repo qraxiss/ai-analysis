@@ -3,4 +3,5 @@
  * Do not modify this file manually
  */
 
+export * from './prompt';
 export * from './user';

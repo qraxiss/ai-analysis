@@ -36,7 +36,9 @@ app.use((req, res, next) => {
 
 // routes
 import { router as authRouter } from './routes/auth'
+import { router as promptRouter } from './routes/prompt'
 app.use('/auth', authRouter)
+app.use('/prompt', promptRouter)
 
 // Error Handling
 app.use(status500)
