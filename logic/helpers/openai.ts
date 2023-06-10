@@ -9,8 +9,6 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 export async function getAiAnswer(messages: ChatCompletionRequestMessage[], temperature: number) {
-    console.log(messages)
-
     try {
         var completion = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
@@ -18,8 +16,6 @@ export async function getAiAnswer(messages: ChatCompletionRequestMessage[], temp
             temperature: temperature
         })
     } catch (e: any) {
-        console.log(e.response.data.error.message)
-
         throw new ChatGPTError(e.response.data.error.message)
     }
 
