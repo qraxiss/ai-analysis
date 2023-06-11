@@ -8,10 +8,10 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export async function getAiAnswer(messages: ChatCompletionRequestMessage[], temperature: number) {
+export async function getAiAnswer(messages: ChatCompletionRequestMessage[], temperature: number, model: string) {
     try {
         var completion = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: model,
             messages: messages,
             temperature: temperature
         })

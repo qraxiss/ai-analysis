@@ -40,5 +40,5 @@ export async function getAiResponse(params: any) {
         }
     ] as ChatCompletionRequestMessage[]
 
-    return await getAiAnswer(messages, value.temperature!)
+    return await getAiAnswer(messages, value.temperature!, value.model!)
 }
