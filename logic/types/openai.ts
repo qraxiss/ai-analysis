@@ -4,7 +4,11 @@
  */
 
 export interface openai {
-  content: string;
+  content?: string;
+  history?: {
+    content: string;
+    role: string;
+  }[];
   model?: string;
   prompt: string;
   temperature?: number;
