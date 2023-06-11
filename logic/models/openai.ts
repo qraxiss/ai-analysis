@@ -10,35 +10,52 @@ import { ChatCompletionRequestMessage } from 'openai'
 
 import Joi from 'joi'
 
+function dynamicValidator(variables: string[], reqVariables: any) {
+    const temp_obj: any = {}
+    variables.forEach((variable) => {
+        temp_obj[variable] = Joi.string().required()
+    })
+    const tempValidator = Joi.object(temp_obj)
+
+    return validate(reqVariables, tempValidator)
+}
+
+function variableReplacer(prompt: string, variables: any) {
+    Object.keys(variables).forEach((variable) => {
+        prompt = prompt.replace('{$_var_}'.replace('_var_', variable), variables[variable])
+    })
+    return prompt
+}
+
+function contentToChatCompletionRequestMessage(content: string, role: string) {
+    return {
+        content: content,
+        role: role
+    } as ChatCompletionRequestMessage
+}
+
 export async function getAiResponse(params: any) {
     const value = validate(params, validator.openai) as types.openai
 
+    // get the default prompt from the database
     const prompt = (await PromptModel.findOne({ name: value.prompt })) as Prompt
 
+    // if variables are present, validate them and replace them in the prompt
     if (prompt.variables && value.variables) {
-        const temp_obj: any = {}
-        prompt.variables.forEach((variable) => {
-            temp_obj[variable] = Joi.string().required()
-        })
-        const temp_schema = Joi.object(temp_obj)
-
-        var variables = validate(value.variables, temp_schema)
-
-        prompt.variables.forEach((variable) => {
-            prompt.text = prompt.text.replace('{$_var_}'.replace('_var_', variable), variables[variable])
-        })
+        const variables = dynamicValidator(prompt.variables, value.variables)
+        prompt.text = variableReplacer(prompt.text, variables)
     }
 
-    const messages = [
-        {
-            content: prompt.text,
-            role: 'system'
-        },
-        {
-            content: value.content,
-            role: 'user'
-        }
-    ] as ChatCompletionRequestMessage[]
+    const messages = [contentToChatCompletionRequestMessage(prompt.text, 'system')]
+
+    // if history is present, add it to the messages
+    if (value.history) {
+        value.history.forEach((message: any) => {
+            messages.push(contentToChatCompletionRequestMessage(message.content, message.role))
+        })
+    } else if (value.content) {
+        messages.push(contentToChatCompletionRequestMessage(value.content, 'user'))
+    }
 
     return await getAiAnswer(messages, value.temperature!, value.model!)
 }
