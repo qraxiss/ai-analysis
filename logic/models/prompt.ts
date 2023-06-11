@@ -2,7 +2,7 @@ import * as validator from '../validators/prompt'
 import { validate } from '../helpers/validator'
 import * as types from '../types'
 
-import { PromptModel } from '../../database/models/prompt'
+import { Prompt, PromptModel } from '../../database/models/prompt'
 
 export async function createPrompt(params: any) {
     const value = validate(params, validator.createPrompt) as types.createPrompt
@@ -41,7 +41,7 @@ export async function getPrompt(params: any) {
         throw new Error('Prompt not found!')
     }
 
-    return result
+    return result as Prompt[]
 }
 
 export async function appendVariable(params: any) {

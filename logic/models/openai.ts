@@ -2,13 +2,13 @@ import * as validator from '../validators/openai'
 import { validate } from '../helpers/validator'
 import * as types from '../types'
 
-import { PromptModel, Prompt } from '../../database/models/prompt'
-
 import { getAiAnswer } from '../helpers/openai'
 
 import { ChatCompletionRequestMessage } from 'openai'
 
 import Joi from 'joi'
+
+import * as promptLogic from './prompt'
 
 function dynamicValidator(variables: string[], reqVariables: any) {
     const temp_obj: any = {}
@@ -38,7 +38,8 @@ export async function getAiResponse(params: any) {
     const value = validate(params, validator.openai) as types.openai
 
     // get the default prompt from the database
-    const prompt = (await PromptModel.findOne({ name: value.prompt })) as Prompt
+
+    const prompt = (await promptLogic.getPrompt({ name: value.prompt }))[0]
 
     // if variables are present, validate them and replace them in the prompt
     if (prompt.variables && value.variables) {
